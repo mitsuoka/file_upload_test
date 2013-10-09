@@ -1,0 +1,6 @@
+name: file_upload_servers
+description: A sample web application
+dependencies:
+  http_server: any
+  mime_type: any
+  path: any

@@ -1,0 +1,37 @@
+<!--
+  Send HTTP test request to the DumpHttpMultipart server
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+  <head>
+    <title>GET / POST query test</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <!--
+  replace upper line with :
+  <meta http-equiv="Content-Type" content="text/html; charset=windows-31j">
+  and compare the result
+  -->
+  </head>
+
+  <body>
+    <H1>Send text area value to the server</H1>
+    <br>
+    <form method="get" action="http://localhost:8080/DumpHttpMultipart">
+      <textarea rows="5" cols="80" name="submitGet"></textarea><br>
+      <input type="submit" value="Submit using GET">
+    </form>
+    <form method="post" action="http://127.0.0.1:8080/DumpHttpMultipart">
+  <!--
+    default enctype is "application/x-www-form-urlencoded"
+  -->
+      <textarea rows="5" cols="80" name="submitPost"></textarea><br>
+      <input type="submit" value="Submit using POST by URL encoding">
+    </form>
+     <form method="post" action="http://127.0.0.1:8080/DumpHttpMultipart" enctype="text/plain">
+      <textarea rows="5" cols="80" name="submitPost"></textarea><br>
+      <input type="submit" value="Submit using POST by text/plain">
+    </form>
+  </body>
+
+</html>
