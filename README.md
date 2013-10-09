@@ -2,13 +2,13 @@ file\_upload\_test (under construction)
 ==
 
 **file\_upload\_test** is a set of file upload test servers for development of
-server application utilizing Dart [http\_server](https://pub.dartlang.org/packages/http_server)
+server application‚“ utilizing Dart [http\_server](https://pub.dartlang.org/packages/http_server)
 pub package.
 
-This repository consists of the following source codes.
+This repository consists of following source codes.
 
 - **bin/test\_server\_1.dart** : Returns contents of the HTTP request to the client.
-  This server reports MIME multipart body byte data as ASCII text and hexdump.
+  This server reports MIME multipart body byte data as ASCII and UTF-8 text and hexdump.
  You can confirm what actual HTTP request the client sent to the server.
 
 - **bin/test\_server\_2.dart** : Returns contents of the HTTP request to the client.
@@ -22,7 +22,7 @@ This repository consists of the following source codes.
  This server utilizes **mime\_multipart\_transformer** and
  **HttpMultipartFormData.parse** static method,
    and reports MIME multipart body data as List of **FormField** objects. This code refers
- to[ "http\_multipar\t_test.dart]
+ to[ "http\_multipart\_test.dart]
 (https://code.google.com/p/dart/codesearch#dart/trunk/dart/pkg/http_server/test/http_multipart_test.dart&sq=package:dart)
  written by Dart team.
 
@@ -30,7 +30,7 @@ Following files are also included:
 
 - **resources/file\_upload\_test.html** : HTML file to send a HTML MIME multipart request to one of above servers.
 You can type "your\_name" in the name field, and selects a
-   file (e.g. "test\_file.txt") for the answer to 'What files are you sending?'  Click "Send File" button
+   file (e.g. "test\_file.txt") for the answer to 'What files are you sending?'.  Click "Send File" button
  to send a MIME multipart request including selected file.
 
 - **resources/get\_post\_query\_test.html** : HTML file to send a form data using GET / POST method. This file
