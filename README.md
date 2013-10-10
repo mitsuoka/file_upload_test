@@ -5,10 +5,10 @@ file\_upload\_test (under construction)
 server application‚“ utilizing Dart [http\_server](https://pub.dartlang.org/packages/http_server)
 pub package.
 
-This repository consists of following source codes.
+This repository consists of following server codes.
 
 - **bin/test\_server\_1.dart** : Returns contents of the HTTP request to the client.
-  This server reports MIME multipart body byte data as ASCII and UTF-8 text and hexdump.
+  This server reports MIME multipart body byte data as ASCII text, UTF-8 text and hexdump.
  You can confirm what actual HTTP request the client sent to the server.
 
 - **bin/test\_server\_2.dart** : Returns contents of the HTTP request to the client.
@@ -21,7 +21,7 @@ This repository consists of following source codes.
 - **bin/test\_server\_3.dart** : Returns contents of the HTTP request to the client.
  This server utilizes **mime\_multipart\_transformer** and
  **HttpMultipartFormData.parse** static method,
-   and reports MIME multipart body data as List of **FormField** objects. This code refers
+   and reports MIME multipart body data as a List of **FormField** objects. This code refers
  to[ "http\_multipart\_test.dart]
 (https://code.google.com/p/dart/codesearch#dart/trunk/dart/pkg/http_server/test/http_multipart_test.dart&sq=package:dart)
  written by Dart team.
