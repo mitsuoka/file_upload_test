@@ -38,7 +38,13 @@ is used to test how those above servers can handle GET and POST query.
  You can send a text including multi-byte characters like Kanji as text/plain or application/x-www-form-urlencoded encoding.
 
 
-- **resources/test\_file.txt** : Short test text file to upload.
+- **resources/test\_file.txt** : Short test text file to upload consists of ISO-8859-1 characters.
+
+- **resources/test\_file\_UTF8\_√.txt** : Short test text file to upload. UTF-8 encoded file name includes one multibyte character '√ '. UTF encoded content includes one multibyte character '√'.
+
+- **resources/test\_file\_SJIS\_√.txt** : Short test text file to upload. UTF-8 encoded file name includes multibyte character '√' . SJIS encoded content includes one multibyte character '√'.
+
+
 
 このサンプルは[「プログラミング言語Dartの基礎」]
 (http://www.cresc.co.jp/tech/java/Google_Dart/DartLanguageGuide_about.html)の
@@ -54,6 +60,11 @@ is used to test how those above servers can handle GET and POST query.
 1. Run one of above servers.
 2. Access **file\_upload\_test.html** or **get\_post\_query\_test.html** from your browser.
 3. Click submit button to send HTTP request to  the server.
+
+
+### License ###
+This sample is licensed under [MIT License][MIT].
+[MIT]: http://www.opensource.org/licenses/mit-license.php
 
 
 ### License ###

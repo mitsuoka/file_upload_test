@@ -90,7 +90,7 @@ void requestReceivedHandler(HttpRequest request) {
                   bodyData.write('\npart : $key');
                   if( part is HttpBodyFileUpload){
                     bodyData..write('\n content type : ${part.contentType}')
-                            ..write('\n file name : ${part.filename}')
+                            ..write('\n file name : ${UTF8.decode(LATIN1.encode(part.filename))}')
                             ..write('\n content size : ${part.content.length}');
                     if (part.contentType.value.toLowerCase().startsWith('text')) {
                       bodyData.write('\n content : ${part.content}');
@@ -121,8 +121,8 @@ void requestReceivedHandler(HttpRequest request) {
       return;
     }
 
-  } catch (ex, st) {
-    print(ex);
+  } catch (e, st) {
+    print(e);
     print(st);
     response.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
     response.close();
@@ -171,6 +171,43 @@ String createHtmlResponse(HttpRequest request, StringBuffer bodyData) {
 ''';
   return res;
 }
+
+
+// Hex dump List<int> data
+class HexDump {
+
+  StringBuffer hexDump(StringBuffer sb, List<int> data) {
+    sb.write("\n hexa dump:");
+    int lines = data.length ~/ 32;
+    int lastLineBytes = data.length % 32;
+    for (int l = 0; l < lines; l++) {
+      dumpLine(sb, data, l, 32);
+    }
+    if (lastLineBytes != 0) dumpLine(sb, data, lines, lastLineBytes);
+    return sb;
+  }
+
+  StringBuffer dumpLine(StringBuffer sb, List<int> data, int line, int col) {
+    sb.write('\n');
+    for (int c = 0; c < col; c++){
+      int byte = data[line * 32 + c];
+      int n = byte ~/ 16;
+      if (n > 9) n = n + 7;
+      sb.write(' ' + new String.fromCharCode(n + 48));
+      n = byte & 15;
+      if (n > 9) n = n + 7;
+      sb.write(new String.fromCharCode(n + 48));
+    }
+    sb.write(' ');
+    for (int c = 0; c < col; c++){
+      int byte = data[line * 32 + c];
+      if (byte < 32) byte = 46;
+      if (byte >126) byte = 46;
+      sb.write(new String.fromCharCode(byte));
+    }
+  }
+}
+
 
 // create log message
 StringBuffer createLogMessage(HttpRequest request, [StringBuffer bodyData]) {

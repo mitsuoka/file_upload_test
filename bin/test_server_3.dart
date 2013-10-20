@@ -182,6 +182,11 @@ requset.session.isNew : ${request.session.isNew}
      for (int i = 0; i < formFields.length; i++) {
        sb.write("\n part$i : ${formFields[i].toString()}");
      }
+
+
+//     sb.write("\n file name length : ${formFields[1].filename.length}");
+//     sb.write("\n file name : ${formFields[1].filename}");
+
   }
   sb.write("\n");
   return sb;

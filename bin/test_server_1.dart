@@ -1,7 +1,7 @@
 /*
   Dart code sample : Simple tool for HTTP file upload server development
   Returns contents of the HTTP request to the client.
-  This server reports MIME multipart body byta data as ASCII text and hexdump.
+  This server reports MIME multipart body byta data as text and hexdump.
     1. Run this server.
     2. Open the file_upload_test.html file from your browser such as :
        file:///C:/ … /file_upload_servers/resouces/file_upload_test.html
@@ -126,12 +126,16 @@ request.headers :
 requset.session.isNew : ${request.session.isNew}
 ''');
   if (request.method == "POST") {
-     sb.write("\nbody byte data\n size : ${bodyBytes.length}\n data as ASCII:\n");
+     sb.write("\nbody byte data\n size : ${bodyBytes.length}\n\n data as ISO-8859-1:\n");
      for (int i = 0; i < bodyBytes.length; i++) {
        sb.write(new String.fromCharCode(bodyBytes[i]));
       }
-     sb.write("\n data as UTF-8:\n${new Utf8Decoder().convert(bodyBytes)}");
+     // following try block is for UTF-8 encoded body data
+     try {
+       sb.write("\n\n data as UTF-8:\n${new Utf8Decoder().convert(bodyBytes)}\n");
+     } on FormatException catch(e) {
      new HexDump().hexDump(sb, bodyBytes);
+     }
   }
   sb.write("\n");
   return sb;
