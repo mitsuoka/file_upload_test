@@ -12,6 +12,7 @@
        click the Send File button.
     4. This server will return available header abd body data from the request.
   October 2013, by Terry Mitsuoka
+  November 2013, API change (remoteHost -> remoteAddress) incorporated
 */
 
 import "dart:async";
@@ -145,7 +146,7 @@ StringBuffer createLogMessage(HttpRequest request, [List<FormField> formFields])
   var sb = new StringBuffer( '''request.headers.host : ${request.headers.host}
 request.headers.port : ${request.headers.port}
 request.connectionInfo.localPort : ${request.connectionInfo.localPort}
-request.connectionInfo.remoteHost : ${request.connectionInfo.remoteHost}
+request.connectionInfo.remoteAddress : ${request.connectionInfo.remoteAddress}
 request.connectionInfo.remotePort : ${request.connectionInfo.remotePort}
 request.method : ${request.method}
 request.persistentConnection : ${request.persistentConnection}

@@ -12,6 +12,7 @@
        click the Send File button.
     4. This server will return available header abd body data from the request.
   October 2013, by Terry Mitsuoka
+  November 2013, API change (remoteHost -> remoteAddress) incorporated
 */
 
 import "dart:async";
@@ -90,10 +91,18 @@ void requestReceivedHandler(HttpRequest request) {
                   bodyData.write('\npart : $key');
                   if( part is HttpBodyFileUpload){
                     bodyData..write('\n content type : ${part.contentType}')
+                            ..write('\n file name : ${part.filename}')
                             ..write('\n file name : ${UTF8.decode(LATIN1.encode(part.filename))}')
                             ..write('\n content size : ${part.content.length}');
                     if (part.contentType.value.toLowerCase().startsWith('text')) {
                       bodyData.write('\n content : ${part.content}');
+                    }
+                    else {
+                      bodyData.write('\n content : ${part}');
+                      if (part.content is List<int>)
+                      new HexDump().hexDump(bodyData, part.content);
+//                      if (part.content is String)
+//                      new HexDump().hexDump(bodyData, UTF8.encode(part.content));
                     }
                   }
                   else bodyData.write('\n content : ${part}');
@@ -214,7 +223,7 @@ StringBuffer createLogMessage(HttpRequest request, [StringBuffer bodyData]) {
   var sb = new StringBuffer( '''request.headers.host : ${request.headers.host}
 request.headers.port : ${request.headers.port}
 request.connectionInfo.localPort : ${request.connectionInfo.localPort}
-request.connectionInfo.remoteHost : ${request.connectionInfo.remoteHost}
+request.connectionInfo.remoteAddress : ${request.connectionInfo.remoteAddress}
 request.connectionInfo.remotePort : ${request.connectionInfo.remotePort}
 request.method : ${request.method}
 request.persistentConnection : ${request.persistentConnection}
