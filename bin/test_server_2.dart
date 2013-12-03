@@ -48,104 +48,112 @@ void main() {
 
 void requestReceivedHandler(HttpRequest request) {
   HttpResponse response = request.response;
-  try {
-    if (request.method == "GET") {
-      sendResponse(request, null);
-    }
-
-    else if (request.method == "POST") {
-      HttpBodyHandler.processRequest(request, defaultEncoding: UTF8)
-        .then((body) {
-          var bodyData = new StringBuffer("");
-          switch (body.type) {
-            case "text":
-              bodyData.write("\ntext body data :\n${body.body}");
-              sendResponse(request, bodyData);
-              break;
-
-            case "json":
-              bodyData.write("\nJSON text body data :\n${body.body}");
-              sendResponse(request, bodyData);
-              break;
-
-            case "binary":
-              bodyData.write("\nbody byte data :\n size : ${
-                              body.body.length}\n data as ASCII :\n");
-              for (int i = 0; i < body.body.length; i++) {
-                bodyData.write(new String.fromCharCode(body.body[i]));
-              }
-              sendResponse(request, bodyData);
-              break;
-
-            case "form":
-              var mimeType = body.contentType.mimeType;
-              if (mimeType == 'application/x-www-form-urlencoded') {
-                bodyData.write("\nform body data :\n${body.body}");
-                sendResponse(request, bodyData);
-              }
-              else if (mimeType == 'multipart/form-data') {
-                bodyData.write('\nmultipart body data');
-                for (var key in body.body.keys)
-                {
-                  var part = body.body[key];
-                  bodyData.write('\npart : $key');
-                  if( part is HttpBodyFileUpload){
-                    bodyData..write('\n content type : ${part.contentType}')
-                            ..write('\n file name : ${part.filename}')
-                            ..write('\n file name : ${UTF8.decode(LATIN1.encode(part.filename))}')
-                            ..write('\n content size : ${part.content.length}');
-                    if (part.contentType.value.toLowerCase().startsWith('text')) {
-                      bodyData.write('\n content : ${part.content}');
-                    }
-                    else {
-                      bodyData.write('\n content : ${part}');
-                      if (part.content is List<int>)
-                      new HexDump().hexDump(bodyData, part.content);
-//                      if (part.content is String)
-//                      new HexDump().hexDump(bodyData, UTF8.encode(part.content));
-                    }
-                  }
-                  else bodyData.write('\n content : ${part}');
-                }
-                sendResponse(request, bodyData);
-              }
-              break;
-
-            default:
-              response.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-              response.close();
-              throw "bad body type";
-          }
-        }, onError: (error) {
-          print('processRequest Exception occured : $error');
-          response.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-          request.response.close();
-       }
-      );
-    }
-
-    else {
-      response.statusCode = HttpStatus.METHOD_NOT_ALLOWED;
-      response.close();
-      return;
-    }
-
-  } catch (e, st) {
-    print(e);
-    print(st);
-    response.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-    response.close();
+  if (request.method == "GET") {
+    sendResponse(request, null);
   }
+
+  else if (request.method == "POST") {
+    HttpBodyHandler.processRequest(request, defaultEncoding: UTF8)
+      .then((body) {
+        try {
+        var bodyData = new StringBuffer("");
+        switch (body.type) {
+          case "text":
+            bodyData.write("\ntext body data :\n${body.body}");
+            sendResponse(request, bodyData);
+            break;
+
+          case "json":
+            bodyData.write("\nJSON text body data :\n${body.body}");
+            sendResponse(request, bodyData);
+            break;
+
+          case "binary":
+            bodyData.write("\nbody byte data :\n size : ${
+                            body.body.length}\n data as ASCII :\n");
+            for (int i = 0; i < body.body.length; i++) {
+              bodyData.write(new String.fromCharCode(body.body[i]));
+            }
+            sendResponse(request, bodyData);
+            break;
+
+          case "form":
+            var mimeType = request.headers.contentType;
+            if (mimeType.toString().startsWith('application/x-www-form-urlencoded')) {
+              bodyData.write("\nform body data :\n${body.body}");
+              sendResponse(request, bodyData);
+            }
+            else if (mimeType.toString().startsWith('multipart/form-data')) {
+              bodyData.write('\nmultipart body data');
+              for (var key in body.body.keys) {
+                var part = body.body[key];
+                bodyData.write('\npart : $key');
+                if( part is HttpBodyFileUpload){
+                  bodyData..write('\n content type : ${part.contentType}')
+                          ..write('\n file name : ${part.filename}')
+       //                   ..write('\n file name : ${UTF8.decode(LATIN1.encode(part.filename))}')
+                          ..write('\n content size : ${part.content.length}');
+                  if (part.contentType.value.toLowerCase().startsWith('text')) {
+                    bodyData.write('\n content : ${part.content}');
+                  }
+                  else {
+                    bodyData.write('\n content : ${part}');
+                    if (part.content is List<int>)
+                      new HexDump().hexDump(bodyData, part.content);
+//                  if (part.content is String)
+//                    new HexDump().hexDump(bodyData, UTF8.encode(part.content));
+                  }
+                }
+                else bodyData.write('\n content : ${part}');
+              }
+              sendResponse(request, bodyData);
+            }
+            break;
+
+          default:
+            print('bad body format');
+            response
+              ..statusCode = HttpStatus.INTERNAL_SERVER_ERROR
+              ..write('<pre>bad body format</pre>')
+              ..close();
+        }
+        }catch (e, st) {
+          print('exception occured during processRequest data');
+          response
+            ..statusCode = HttpStatus.INTERNAL_SERVER_ERROR
+            ..write('<pre>internal server error:\n$e\n$st</pre>')
+            ..close();
+        }
+      }, onError: (e, st) {
+          print('processRequest Exception occured : $e');
+          response
+            ..statusCode = HttpStatus.INTERNAL_SERVER_ERROR
+            ..write('<pre>internal server error:\n$e\n$st</pre>')
+            ..close();
+    });
+
+  }
+
+  else {
+    response
+      ..statusCode = HttpStatus.METHOD_NOT_ALLOWED
+      ..close();
+    return;
+  }
+
 }
+
+
 
 // process the request and send a response
 sendResponse(HttpRequest request, StringBuffer bodyData){
   if (LOG_REQUESTS) {
     print(createLogMessage(request, bodyData));
   }
-  request.response..headers.add("Content-Type", "text/html; charset=UTF-8")
-                  ..write(createHtmlResponse(request, bodyData))
-                  ..close();
+  request.response
+    ..headers.add("Content-Type", "text/html; charset=UTF-8")
+    ..write(createHtmlResponse(request, bodyData))
+    ..close();
 }
 
 // FormField represents each part of the MIME multipart
